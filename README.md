@@ -51,10 +51,17 @@ Cada vez que se ejecuta el workflow, se genera un patrón aleatorio diferente:
 
 <!-- ASCII_ART_START -->
 ```
-Generado: 2025-10-27 22:01:26 UTC
-Tipo: art(coffee)
+Generado: 2025-10-27 23:10:35 UTC
+Tipo: text2art(GitHub, font=rand)
 
-c[_]
+                                                      
+  #####     ##     ##       ##                ##      
+ #######    ##     ####     #####    ##   ##  ## ###  
+ ##   ##           ####     ######   ##   ##  ## #### 
+ #######    ##     ##       ##  ###  ##   ##  ##   ## 
+      ##    ##     ##   ##  ##   ##  ##   ##  ##   ## 
+  ######    ##     #######  ##   ##  #######  ####### 
+  #####     ##      #####   ##   ##   #####    #####  
 ```
 <!-- ASCII_ART_END -->
 
