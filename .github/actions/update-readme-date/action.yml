@@ -44,20 +44,24 @@ runs:
 
         echo "🗓️  Nueva fecha: $CURRENT_DATE"
 
-        # Actualizar el README entre los marcadores
-        sed -i.bak '/<!-- LAST_UPDATE_START -->/,/<!-- LAST_UPDATE_END -->/{
-          /<!-- LAST_UPDATE_START -->/!{
-            /<!-- LAST_UPDATE_END -->/!d
+        # Crear archivo temporal con el contenido actualizado
+        awk -v date="$CURRENT_DATE" '
+          /<!-- LAST_UPDATE_START -->/ {
+            print
+            print "Última actualización: " date
+            skip=1
+            next
           }
-        }' "$README_FILE"
+          /<!-- LAST_UPDATE_END -->/ {
+            skip=0
+            print
+            next
+          }
+          !skip {print}
+        ' "$README_FILE" > "${README_FILE}.tmp"
 
-        # Insertar la nueva fecha
-        sed -i.bak '/<!-- LAST_UPDATE_START -->/a\
-Última actualización: '"$CURRENT_DATE"'
-' "$README_FILE"
-
-        # Limpiar archivo de respaldo
-        rm -f "${README_FILE}.bak"
+        # Reemplazar el archivo original
+        mv "${README_FILE}.tmp" "$README_FILE"
 
         # Verificar si hubo cambios
         if git diff --quiet "$README_FILE"; then
