@@ -11,6 +11,14 @@ inputs:
     description: 'Versión de Python a usar'
     required: false
     default: '3.11'
+  art-text:
+    description: 'Texto para generar el arte ASCII'
+    required: false
+    default: 'GitHub'
+  art-type:
+    description: 'Tipo de arte a generar (text, coffee, dog, cat, butterfly, random)'
+    required: false
+    default: 'text'
 
 outputs:
   art-generated:
@@ -34,42 +42,64 @@ runs:
     - name: Generate ASCII Art
       id: generate
       shell: bash
+      env:
+        ART_TEXT: ${{ inputs.art-text }}
+        ART_TYPE: ${{ inputs.art-type }}
       run: |
         README_FILE="${{ inputs.readme-path }}"
 
-        echo "🎨 Generando arte ASCII aleatorio..."
+        echo "🎨 Generando arte ASCII con tipo: $ART_TYPE"
 
         python3 << 'PYTHON_SCRIPT'
+        import os
         import random
         from datetime import datetime
         from art import text2art, art, tprint
 
-        # Lista de textos y fuentes para generar variedad
-        texts = ["GitHub", "Actions", "Demo", "ASCII", "Art", "Python"]
-        fonts = ["block", "random", "rnd-medium", "rnd-small", "standard", "tarty1"]
+        art_text = os.environ.get('ART_TEXT', 'GitHub')
+        art_type_input = os.environ.get('ART_TYPE', 'text')
 
-        # Opción 1: Generar texto artístico
-        selected_text = random.choice(texts)
-        selected_font = random.choice(fonts)
+        fonts = ["random", "rnd-medium", "rnd-small", "standard", "tarty1"]
 
-        try:
-            ascii_text = text2art(selected_text, font=selected_font)
-            art_type = f"text2art({selected_text}, font={selected_font})"
-        except:
-            # Si falla, usar una fuente por defecto
-            ascii_text = text2art(selected_text, font="block")
-            art_type = f"text2art({selected_text}, font=block)"
-
-        # Opción 2: A veces usar arte predefinido
-        if random.random() > 0.6:
-            art_names = ["coffee", "dog", "cat", "butterfly", "random"]
-            selected_art = random.choice(art_names)
+        # Generar el arte según el tipo especificado
+        if art_type_input == 'text':
+            # Generar texto artístico con una fuente aleatoria
+            selected_font = random.choice(fonts)
             try:
-                ascii_text = art(selected_art)
-                art_type = f"art({selected_art})"
+                ascii_text = text2art(art_text, font=selected_font)
+                art_type = f"text2art({art_text}, font={selected_font})"
             except:
-                # Si falla, mantener el texto artístico
-                pass
+                # Si falla, usar la fuente por defecto (sin especificar)
+                ascii_text = text2art(art_text)
+                art_type = f"text2art({art_text})"
+        elif art_type_input == 'random':
+            # Modo aleatorio: elegir entre texto o arte predefinido
+            if random.random() > 0.5:
+                selected_font = random.choice(fonts)
+                try:
+                    ascii_text = text2art(art_text, font=selected_font)
+                    art_type = f"text2art({art_text}, font={selected_font})"
+                except:
+                    ascii_text = text2art(art_text)
+                    art_type = f"text2art({art_text})"
+            else:
+                art_names = ["coffee", "dog", "cat", "butterfly"]
+                selected_art = random.choice(art_names)
+                try:
+                    ascii_text = art(selected_art)
+                    art_type = f"art({selected_art})"
+                except:
+                    ascii_text = text2art(art_text)
+                    art_type = f"text2art({art_text})"
+        else:
+            # Usar arte predefinido (coffee, dog, cat, butterfly)
+            try:
+                ascii_text = art(art_type_input)
+                art_type = f"art({art_type_input})"
+            except:
+                # Si falla, usar texto por defecto
+                ascii_text = text2art(art_text)
+                art_type = f"text2art({art_text}) [fallback]"
 
         timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 

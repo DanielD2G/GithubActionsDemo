@@ -2,6 +2,24 @@ name: Generate ASCII Art
 
 on:
   workflow_dispatch:
+    inputs:
+      art_text:
+        description: 'Texto para generar el arte ASCII'
+        required: false
+        default: 'GitHub'
+        type: string
+      art_type:
+        description: 'Tipo de arte a generar'
+        required: false
+        default: 'text'
+        type: choice
+        options:
+          - text
+          - coffee
+          - dog
+          - cat
+          - butterfly
+          - random
 
 jobs:
   generate-art:
@@ -20,6 +38,8 @@ jobs:
       with:
         readme-path: 'README.md'
         python-version: '3.11'
+        art-text: ${{ inputs.art_text }}
+        art-type: ${{ inputs.art_type }}
 
     - name: Commit and push if changes
       run: |
