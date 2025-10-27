@@ -15,10 +15,6 @@ inputs:
     description: 'Texto para generar el arte ASCII'
     required: false
     default: 'GitHub'
-  art-type:
-    description: 'Tipo de arte a generar (text, coffee, dog, cat, butterfly, random)'
-    required: false
-    default: 'text'
 
 outputs:
   art-generated:
@@ -44,72 +40,26 @@ runs:
       shell: bash
       env:
         ART_TEXT: ${{ inputs.art-text }}
-        ART_TYPE: ${{ inputs.art-type }}
       run: |
-        README_FILE="${{ inputs.readme-path }}"
-
-        echo "🎨 Generando arte ASCII con tipo: $ART_TYPE"
+        echo "🎨 Generando arte ASCII con fuente rand"
 
         python3 << 'PYTHON_SCRIPT'
         import os
-        import random
         from datetime import datetime
-        from art import text2art, art, tprint
+        from art import text2art
 
         art_text = os.environ.get('ART_TEXT', 'GitHub')
-        art_type_input = os.environ.get('ART_TYPE', 'text')
 
-        fonts = ["random", "rnd-medium", "rnd-small", "standard", "tarty1"]
-
-        # Generar el arte según el tipo especificado
-        if art_type_input == 'text':
-            # Generar texto artístico con una fuente aleatoria
-            selected_font = random.choice(fonts)
-            try:
-                ascii_text = text2art(art_text, font=selected_font)
-                art_type = f"text2art({art_text}, font={selected_font})"
-            except:
-                # Si falla, usar la fuente por defecto (sin especificar)
-                ascii_text = text2art(art_text)
-                art_type = f"text2art({art_text})"
-        elif art_type_input == 'random':
-            # Modo aleatorio: elegir entre texto o arte predefinido
-            if random.random() > 0.5:
-                selected_font = random.choice(fonts)
-                try:
-                    ascii_text = text2art(art_text, font=selected_font)
-                    art_type = f"text2art({art_text}, font={selected_font})"
-                except:
-                    ascii_text = text2art(art_text)
-                    art_type = f"text2art({art_text})"
-            else:
-                art_names = ["coffee", "dog", "cat", "butterfly"]
-                selected_art = random.choice(art_names)
-                try:
-                    ascii_text = art(selected_art)
-                    art_type = f"art({selected_art})"
-                except:
-                    ascii_text = text2art(art_text)
-                    art_type = f"text2art({art_text})"
-        else:
-            # Usar arte predefinido (coffee, dog, cat, butterfly)
-            try:
-                ascii_text = art(art_type_input)
-                art_type = f"art({art_type_input})"
-            except:
-                # Si falla, usar texto por defecto
-                ascii_text = text2art(art_text)
-                art_type = f"text2art({art_text}) [fallback]"
-
+        ascii_text = text2art(art_text, font='rand')
         timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
         # Guardar en archivo temporal
         with open("/tmp/ascii_art.txt", "w") as f:
             f.write(f"Generado: {timestamp}\n")
-            f.write(f"Tipo: {art_type}\n\n")
+            f.write(f"Tipo: text2art({art_text}, font=rand)\n\n")
             f.write(ascii_text)
 
-        print(f"✅ Arte generado: {art_type}")
+        print(f"✅ Arte generado: text2art({art_text}, font=rand)")
         PYTHON_SCRIPT
 
         echo "generated=true" >> $GITHUB_OUTPUT
