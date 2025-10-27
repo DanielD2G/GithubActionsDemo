@@ -43,3 +43,6 @@ class TestMathOperations:
     def test_divide_by_zero(self):
         with pytest.raises(ValueError):
             divide(10, 0)
+
+    def test_add_zero(self):
+        assert add(5, 0) == 5
