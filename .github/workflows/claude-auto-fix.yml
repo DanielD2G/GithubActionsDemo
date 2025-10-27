@@ -1,0 +1,79 @@
+name: Claude Auto-Fix Failed Tests
+
+on:
+  workflow_run:
+    workflows: ["Run Tests"]
+    types:
+      - completed
+
+jobs:
+  claude-fix:
+    # Solo ejecutar si el workflow de tests falló
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+
+      - name: Get test results
+        uses: actions/github-script@v7
+        id: get-test-info
+        with:
+          script: |
+            const run_id = context.payload.workflow_run.id;
+
+            // Obtener los logs del workflow que falló
+            const logs = await github.rest.actions.downloadWorkflowRunLogs({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: run_id
+            });
+
+            core.setOutput('run_id', run_id);
+            core.setOutput('branch', context.payload.workflow_run.head_branch);
+            core.setOutput('pr_number', context.payload.workflow_run.pull_requests[0]?.number || '');
+
+      - name: Run Claude Code Action
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Los tests han fallado en el workflow de GitHub Actions.
+
+            Por favor:
+            1. Revisa los errores de los tests en el directorio Tests/
+            2. Analiza qué está causando los fallos
+            3. Corrige el código para que los tests pasen
+            4. Asegúrate de que todos los tests se ejecuten correctamente
+
+            Branch: ${{ steps.get-test-info.outputs.branch }}
+            Workflow Run ID: ${{ steps.get-test-info.outputs.run_id }}
+
+            Ejecuta los tests localmente para verificar que las correcciones funcionan antes de hacer commit.
+          claude_args: |
+            --model claude-sonnet-4-5-20250929
+            --yes
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on PR if exists
+        if: steps.get-test-info.outputs.pr_number != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr_number = ${{ steps.get-test-info.outputs.pr_number }};
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr_number,
+              body: '🤖 Claude Code Action ha sido activado para corregir los tests fallidos. Revisa los commits que se generen.'
+            });

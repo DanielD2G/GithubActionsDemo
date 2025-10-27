@@ -51,7 +51,6 @@ runs:
         art_text = os.environ.get('ART_TEXT', 'GitHub')
 
         ascii_text = text2art(art_text, font='rand')
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
         # Guardar en archivo temporal
         with open("/tmp/ascii_art.txt", "w") as f:
