@@ -1,10 +1,6 @@
 name: Update README Date
 
 on:
-  push:
-    branches: [ main ]
-    paths-ignore:
-      - 'README.md'
   schedule:
     # Se ejecuta todos los días a las 00:00 UTC
     - cron: '0 0 * * *'

@@ -1,13 +1,6 @@
 name: Generate ASCII Art
 
 on:
-  push:
-    branches: [ main ]
-    paths-ignore:
-      - 'README.md'
-  schedule:
-    # Se ejecuta cada 6 horas
-    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
