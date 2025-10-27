@@ -30,8 +30,9 @@ Una composite action que:
 #### Generate Random ASCII Art
 Una composite action que:
 - Usa `actions/setup-python@v5` para configurar Python
-- Instala dependencias (matplotlib, pillow, numpy)
-- Genera arte ASCII aleatorio con diferentes patrones (ondas, espirales, cajas)
+- Instala la librería `art` usando pip
+- Genera arte ASCII aleatorio usando diferentes textos y fuentes
+- Puede generar arte predefinido (café, perro, gato, mariposa) o texto estilizado
 - Actualiza el README con el arte generado dinámicamente
 
 ## 🚀 Cómo usar

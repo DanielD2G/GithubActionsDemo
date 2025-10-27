@@ -29,7 +29,7 @@ runs:
       shell: bash
       run: |
         echo "📦 Instalando dependencias de Python..."
-        pip install matplotlib pillow numpy --quiet
+        pip install art --quiet
 
     - name: Generate ASCII Art
       id: generate
@@ -41,95 +41,45 @@ runs:
 
         python3 << 'PYTHON_SCRIPT'
         import random
-        import math
         from datetime import datetime
+        from art import text2art, art, tprint
 
-        def generate_wave_pattern():
-            """Genera un patrón de onda ASCII"""
-            width = 60
-            height = 10
-            lines = []
-            phase = random.uniform(0, 2 * math.pi)
+        # Lista de textos y fuentes para generar variedad
+        texts = ["GitHub", "Actions", "Demo", "ASCII", "Art", "Python"]
+        fonts = ["block", "random", "rnd-medium", "rnd-small", "standard", "tarty1"]
 
-            for y in range(height):
-                line = ""
-                for x in range(width):
-                    value = math.sin((x / width) * 4 * math.pi + phase) * (height / 2)
-                    if abs(y - height/2 - value) < 0.5:
-                        line += "█"
-                    else:
-                        line += " "
-                lines.append(line)
-            return "\n".join(lines)
+        # Opción 1: Generar texto artístico
+        selected_text = random.choice(texts)
+        selected_font = random.choice(fonts)
 
-        def generate_spiral():
-            """Genera un espiral ASCII"""
-            size = 15
-            grid = [[" " for _ in range(size)] for _ in range(size)]
+        try:
+            ascii_text = text2art(selected_text, font=selected_font)
+            art_type = f"text2art({selected_text}, font={selected_font})"
+        except:
+            # Si falla, usar una fuente por defecto
+            ascii_text = text2art(selected_text, font="block")
+            art_type = f"text2art({selected_text}, font=block)"
 
-            x, y = size // 2, size // 2
-            dx, dy = 0, -1
+        # Opción 2: A veces usar arte predefinido
+        if random.random() > 0.6:
+            art_names = ["coffee", "dog", "cat", "butterfly", "random"]
+            selected_art = random.choice(art_names)
+            try:
+                ascii_text = art(selected_art)
+                art_type = f"art({selected_art})"
+            except:
+                # Si falla, mantener el texto artístico
+                pass
 
-            for i in range(size * size):
-                if (-size//2 < x <= size//2) and (-size//2 < y <= size//2):
-                    grid[y + size//2][x + size//2] = random.choice(["●", "○", "◆", "◇", "★"])
-
-                if x == y or (x < 0 and x == -y) or (x > 0 and x == 1-y):
-                    dx, dy = -dy, dx
-
-                x, y = x + dx, y + dy
-
-            return "\n".join("".join(row) for row in grid)
-
-        def generate_random_pattern():
-            """Genera un patrón aleatorio de caracteres"""
-            chars = ["█", "▓", "▒", "░", "●", "○", "■", "□", "▪", "▫"]
-            lines = []
-
-            for _ in range(10):
-                line = ""
-                for _ in range(40):
-                    if random.random() > 0.7:
-                        line += random.choice(chars)
-                    else:
-                        line += " "
-                lines.append(line)
-            return "\n".join(lines)
-
-        def generate_box_art():
-            """Genera arte con cajas y bordes"""
-            patterns = [
-                "╔═══════════════════════════════════════════════════╗",
-                "║  🎨 GitHub Actions - Arte Generado Dinámicamente  ║",
-                "╠═══════════════════════════════════════════════════╣",
-            ]
-
-            # Añadir patrón central aleatorio
-            for i in range(5):
-                chars = random.choice([
-                    ["█" * random.randint(1, 3), "░" * random.randint(1, 3)],
-                    ["▓", "▒", "░"],
-                    ["●", "○"],
-                ])
-                line = "║  " + "".join(random.choice(chars) for _ in range(20)) + "  ║"
-                patterns.append(line)
-
-            patterns.append("╚═══════════════════════════════════════════════════╝")
-            return "\n".join(patterns)
-
-        # Seleccionar un generador aleatorio
-        generators = [generate_wave_pattern, generate_spiral, generate_random_pattern, generate_box_art]
-        selected_generator = random.choice(generators)
-
-        art = selected_generator()
         timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
 
         # Guardar en archivo temporal
         with open("/tmp/ascii_art.txt", "w") as f:
-            f.write(f"Generado: {timestamp}\n\n")
-            f.write(art)
+            f.write(f"Generado: {timestamp}\n")
+            f.write(f"Tipo: {art_type}\n\n")
+            f.write(ascii_text)
 
-        print(f"✅ Arte generado usando: {selected_generator.__name__}")
+        print(f"✅ Arte generado: {art_type}")
         PYTHON_SCRIPT
 
         echo "generated=true" >> $GITHUB_OUTPUT
