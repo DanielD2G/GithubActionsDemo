@@ -1,0 +1,51 @@
+name: Generate ASCII Art
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+  schedule:
+    # Se ejecuta cada 6 horas
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate-art:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Generate ASCII Art
+      uses: ./.github/actions/generate-ascii-art
+      with:
+        readme-path: 'README.md'
+        python-version: '3.11'
+
+    - name: Commit and push if changes
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+
+        if git diff --quiet README.md; then
+          echo "ℹ️  No hay cambios en el README"
+        else
+          git add README.md
+          git commit -m "Update README with new ASCII art"
+          git push
+          echo "✅ README actualizado con nuevo arte ASCII"
+        fi
+
+    - name: Show art preview
+      run: |
+        echo "### 🎨 Arte ASCII Generado" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "El README ha sido actualizado con un nuevo patrón de arte ASCII." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Puedes verlo en el [README.md](../blob/main/README.md)" >> $GITHUB_STEP_SUMMARY

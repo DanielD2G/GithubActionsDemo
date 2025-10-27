@@ -22,6 +22,18 @@ Una composite action que:
 - Muestra fecha y hora de ejecución
 - Proporciona outputs reutilizables
 
+#### Update README Date
+Una composite action que:
+- Actualiza automáticamente la fecha de última modificación
+- Usa `awk` para actualizar secciones específicas del README
+
+#### Generate Random ASCII Art
+Una composite action que:
+- Usa `actions/setup-python@v5` para configurar Python
+- Instala dependencias (matplotlib, pillow, numpy)
+- Genera arte ASCII aleatorio con diferentes patrones (ondas, espirales, cajas)
+- Actualiza el README con el arte generado dinámicamente
+
 ## 🚀 Cómo usar
 
 Todas las actions se ejecutan automáticamente en cada push o pull request a la rama `main`. También puedes ejecutarlas manualmente desde la pestaña Actions.
@@ -31,6 +43,18 @@ Todas las actions se ejecutan automáticamente en cada push o pull request a la 
 - ✅ Workflow básico implementado
 - ✅ Composite action de saludo implementado
 - 🔄 En desarrollo: Más examples y casos de uso
+
+## 🎨 Arte ASCII Dinámico
+
+Cada vez que se ejecuta el workflow, se genera un patrón aleatorio diferente:
+
+<!-- ASCII_ART_START -->
+```
+Generado: En espera de primera ejecución...
+
+(El arte aparecerá aquí cuando se ejecute el workflow)
+```
+<!-- ASCII_ART_END -->
 
 ## 📅 Última actualización
 
