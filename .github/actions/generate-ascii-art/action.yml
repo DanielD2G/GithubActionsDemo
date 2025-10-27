@@ -55,8 +55,6 @@ runs:
 
         # Guardar en archivo temporal
         with open("/tmp/ascii_art.txt", "w") as f:
-            f.write(f"Generado: {timestamp}\n")
-            f.write(f"Tipo: text2art({art_text}, font=rand)\n\n")
             f.write(ascii_text)
 
         print(f"✅ Arte generado: text2art({art_text}, font=rand)")

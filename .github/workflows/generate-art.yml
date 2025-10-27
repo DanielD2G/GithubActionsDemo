@@ -8,18 +8,6 @@ on:
         required: false
         default: 'GitHub'
         type: string
-      art_type:
-        description: 'Tipo de arte a generar'
-        required: false
-        default: 'text'
-        type: choice
-        options:
-          - text
-          - coffee
-          - dog
-          - cat
-          - butterfly
-          - random
 
 jobs:
   generate-art:
