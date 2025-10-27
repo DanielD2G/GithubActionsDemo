@@ -61,7 +61,6 @@ jobs:
             Ejecuta los tests localmente para verificar que las correcciones funcionan antes de hacer commit.
           claude_args: |
             --model claude-sonnet-4-5-20250929
-            --yes
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Comment on PR if exists
