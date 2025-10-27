@@ -27,7 +27,6 @@ jobs:
         readme-path: 'README.md'
         python-version: '3.11'
         art-text: ${{ inputs.art_text }}
-        art-type: ${{ inputs.art_type }}
 
     - name: Commit and push if changes
       run: |
