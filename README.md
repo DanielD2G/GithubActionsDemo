@@ -51,17 +51,14 @@ Cada vez que se ejecuta el workflow, se genera un patrón aleatorio diferente:
 
 <!-- ASCII_ART_START -->
 ```
-Generado: 2025-10-27 23:10:35 UTC
-Tipo: text2art(GitHub, font=rand)
-
-                                                      
-  #####     ##     ##       ##                ##      
- #######    ##     ####     #####    ##   ##  ## ###  
- ##   ##           ####     ######   ##   ##  ## #### 
- #######    ##     ##       ##  ###  ##   ##  ##   ## 
-      ##    ##     ##   ##  ##   ##  ##   ##  ##   ## 
-  ######    ##     #######  ##   ##  #######  ####### 
-  #####     ##      #####   ##   ##   #####    #####  
+d888888P                     dP   
+   88                        88   
+   88    .d8888b. .d8888b. d8888P 
+   88    88ooood8 Y8ooooo.   88   
+   88    88.  ...       88   88   
+   dP    `88888P' `88888P'   dP   
+                                  
+                                  
 ```
 <!-- ASCII_ART_END -->
 
