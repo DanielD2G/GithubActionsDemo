@@ -1,0 +1,60 @@
+name: 'Greet and Show Repo Info'
+description: 'Saluda personalizadamente y muestra información básica del repositorio'
+author: 'Daniel'
+
+inputs:
+  name:
+    description: 'Nombre de la persona a saludar'
+    required: true
+    default: 'Usuario'
+  emoji:
+    description: 'Emoji para el saludo'
+    required: false
+    default: '👋'
+
+outputs:
+  greeting-message:
+    description: 'El mensaje de saludo generado'
+    value: ${{ steps.greet.outputs.message }}
+  repo-info:
+    description: 'Información del repositorio'
+    value: ${{ steps.info.outputs.repo-data }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Saludar
+      id: greet
+      shell: bash
+      run: |
+        echo "::notice::${{ inputs.emoji }} ¡Hola ${{ inputs.name }}!"
+        echo "message=${{ inputs.emoji }} ¡Hola ${{ inputs.name }}!" >> $GITHUB_OUTPUT
+        echo ""
+        echo "==================================="
+        echo "${{ inputs.emoji }} Bienvenido a GitHub Actions"
+        echo "==================================="
+        echo ""
+
+    - name: Mostrar información del repositorio
+      id: info
+      shell: bash
+      run: |
+        echo "📦 Información del Repositorio:"
+        echo "  • Repositorio: ${{ github.repository }}"
+        echo "  • Branch: ${{ github.ref_name }}"
+        echo "  • Commit SHA: ${{ github.sha }}"
+        echo "  • Actor: ${{ github.actor }}"
+        echo "  • Workflow: ${{ github.workflow }}"
+        echo ""
+
+        # Guardar información en output
+        REPO_DATA="Repo: ${{ github.repository }}, Branch: ${{ github.ref_name }}"
+        echo "repo-data=$REPO_DATA" >> $GITHUB_OUTPUT
+
+    - name: Mostrar fecha y hora
+      shell: bash
+      run: |
+        echo "🕐 Fecha y hora de ejecución:"
+        echo "  • $(date '+%Y-%m-%d %H:%M:%S %Z')"
+        echo ""
+        echo "✅ Action ejecutada exitosamente"
