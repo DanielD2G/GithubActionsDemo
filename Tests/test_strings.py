@@ -37,3 +37,11 @@ class TestStringOperations:
 
     def test_count_vowels_all_vowels(self):
         assert count_vowels("aeiou") == 5
+
+    def test_reverse_python(self):
+        """This test intentionally fails - wrong expected value"""
+        assert reverse_string("python") == "NOHTYP"  # Wrong! Should be "nohtyp" in lowercase
+
+    def test_count_vowels_test_string(self):
+        """This test has wrong expected count"""
+        assert count_vowels("beautiful") == 3  # Wrong! Actually has 5 vowels (e,a,u,i,u)
