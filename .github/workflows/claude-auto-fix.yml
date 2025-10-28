@@ -45,6 +45,8 @@ jobs:
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
+            Branch: ${{ steps.get-test-info.outputs.branch }}
+            Workflow Run ID: ${{ steps.get-test-info.outputs.run_id }}
 
             Los tests han fallado en el workflow de GitHub Actions.
 
@@ -53,9 +55,8 @@ jobs:
             2. Analiza qué está causando los fallos
             3. Corrige el código para que los tests pasen
             4. Asegúrate de que todos los tests se ejecuten correctamente
+            5. Finalmente pushea el codigo al branch de donde viene (PR)
 
-            Branch: ${{ steps.get-test-info.outputs.branch }}
-            Workflow Run ID: ${{ steps.get-test-info.outputs.run_id }}
 
             Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
             Use `git add, git commit and git push` to push changes to github with the fixes
