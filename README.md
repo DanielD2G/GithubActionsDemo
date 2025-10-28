@@ -35,6 +35,7 @@ Una composite action que:
 - Puede generar arte predefinido (café, perro, gato, mariposa) o texto estilizado
 - Actualiza el README con el arte generado dinámicamente
 
+
 ## 🚀 Cómo usar
 
 Todas las actions se ejecutan automáticamente en cada push o pull request a la rama `main`. También puedes ejecutarlas manualmente desde la pestaña Actions.
