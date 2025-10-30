@@ -5,14 +5,12 @@ Este repositorio es un proyecto de demostración para explorar y aprender las ca
 
 <!-- ASCII_ART_START -->
 ```
-d888888P                     dP   
-   88                        88   
-   88    .d8888b. .d8888b. d8888P 
-   88    88ooood8 Y8ooooo.   88   
-   88    88.  ...       88   88   
-   dP    `88888P' `88888P'   dP   
-                                  
-                                  
+                           
+|   |     |    o     o     
+|---|,---.|    .. . ..,---.
+|   ||   ||    || | ||`---.
+`   '`---'`---'``-'-'``---'
+                           
 ```
 <!-- ASCII_ART_END -->
 
