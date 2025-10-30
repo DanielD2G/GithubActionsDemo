@@ -50,3 +50,6 @@ class TestMathOperations:
     def test_multiply_by_ten(self):
         """This test intentionally fails to trigger Claude auto-fix"""
         assert multiply(5, 10) == 100  # Wrong! Should be 50
+
+    def test_5_plus_5(self):
+        assert add(5, 5) == 100 
