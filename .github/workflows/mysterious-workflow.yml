@@ -1,4 +1,4 @@
-name: Claude Auto Fix
+name: Mysterious Workflow
 
 on:
   workflow_run:
