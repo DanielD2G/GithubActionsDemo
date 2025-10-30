@@ -22,7 +22,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Generate ASCII Art
-      uses: ./.github/actions/generate-ascii-art
+      uses: ./actions/generate-ascii-art
       with:
         readme-path: 'README.md'
         python-version: '3.11'

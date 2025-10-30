@@ -20,7 +20,7 @@ jobs:
 
     - name: Actualizar fecha en README
       id: update-date
-      uses: ./.github/actions/update-readme-date
+      uses: ./actions/update-readme-date
       with:
         readme-path: 'README.md'
         timezone: 'UTC'

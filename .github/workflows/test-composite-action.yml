@@ -18,7 +18,7 @@ jobs:
 
     - name: Usar nuestra composite action
       id: greet-action
-      uses: ./.github/actions/greet-and-info
+      uses: ./actions/greet-and-info
       with:
         name: ${{ github.event.inputs.user_name || 'GitHub Actions User' }}
         emoji: '🚀'
@@ -30,7 +30,7 @@ jobs:
         echo "  • Info Repo: ${{ steps.greet-action.outputs.repo-info }}"
 
     - name: Prueba con diferentes parámetros
-      uses: ./.github/actions/greet-and-info
+      uses: ./actions/greet-and-info
       with:
         name: 'Daniel'
         emoji: '👨‍💻'
