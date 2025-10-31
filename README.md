@@ -4,7 +4,16 @@ Este repositorio es un proyecto de demostración para explorar y aprender las ca
 
 
 <!-- ASCII_ART_START -->
-
+```
+ ####                                 #                 
+ #   #                                #                 
+ #   #  # ##    ###   ## #    ###   #####   ###    ###  
+ ####   ##     #   #  # # #  #   #    #    #   #  #   # 
+ #      #      #   #  # # #  #####    #    #####  #   # 
+ #      #      #   #  # # #  #        #    #      #   # 
+ #      #       ###   #   #   ###      ##   ###    ###  
+                                                        
+```
 <!-- ASCII_ART_END -->
 
 ## 📅 Última actualización
