@@ -49,4 +49,4 @@ class TestMathOperations:
 
 
     def test_add_jaja(self):
-        assert add(5, 5) == 5
+        assert add(5, 5) == 10
