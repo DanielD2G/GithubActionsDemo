@@ -47,3 +47,6 @@ class TestMathOperations:
     def test_add_zero(self):
         assert add(5, 0) == 5
 
+
+    def test_add_jaja(self):
+        assert add(5, 5) == 5
