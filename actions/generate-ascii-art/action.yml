@@ -1,0 +1,101 @@
+name: 'Generate Random ASCII Art'
+description: 'Genera arte ASCII aleatorio usando Python y lo inserta en el README'
+author: 'Daniel'
+
+inputs:
+  readme-path:
+    description: 'Ruta al archivo README'
+    required: false
+    default: 'README.md'
+  python-version:
+    description: 'Versión de Python a usar'
+    required: false
+    default: '3.11'
+  art-text:
+    description: 'Texto para generar el arte ASCII'
+    required: false
+    default: 'GitHub'
+
+outputs:
+  art-generated:
+    description: 'Indica si el arte fue generado exitosamente'
+    value: ${{ steps.generate.outputs.generated }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        echo "📦 Instalando dependencias de Python..."
+        pip install art --quiet
+
+    - name: Generate ASCII Art
+      id: generate
+      shell: bash
+      env:
+        ART_TEXT: ${{ inputs.art-text }}
+      run: |
+        echo "🎨 Generando arte ASCII con fuente rand"
+
+        python3 << 'PYTHON_SCRIPT'
+        import os
+        from datetime import datetime
+        from art import text2art
+
+        art_text = os.environ.get('ART_TEXT', 'GitHub')
+
+        ascii_text = text2art(art_text, font='rand')
+
+        # Guardar en archivo temporal
+        with open("/tmp/ascii_art.txt", "w") as f:
+            f.write(ascii_text)
+
+        print(f"✅ Arte generado: text2art({art_text}, font=rand)")
+        PYTHON_SCRIPT
+
+        echo "generated=true" >> $GITHUB_OUTPUT
+
+    - name: Update README with ASCII Art
+      shell: bash
+      run: |
+        README_FILE="${{ inputs.readme-path }}"
+
+        # Leer el arte generado
+        ART_CONTENT=$(cat /tmp/ascii_art.txt)
+
+        # Crear archivo temporal con el contenido actualizado
+        awk -v art="$ART_CONTENT" '
+          /<!-- ASCII_ART_START -->/ {
+            print
+            print "```"
+            print art
+            print "```"
+            skip=1
+            next
+          }
+          /<!-- ASCII_ART_END -->/ {
+            skip=0
+            print
+            next
+          }
+          !skip {print}
+        ' "$README_FILE" > "${README_FILE}.tmp"
+
+        mv "${README_FILE}.tmp" "$README_FILE"
+
+        echo "✅ README actualizado con el arte ASCII"
+
+    - name: Show summary
+      shell: bash
+      run: |
+        echo "### 🎨 Arte ASCII Generado" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        cat /tmp/ascii_art.txt >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY

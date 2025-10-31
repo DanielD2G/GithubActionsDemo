@@ -1,0 +1,82 @@
+name: 'Update README Date'
+description: 'Actualiza automáticamente la fecha de última actualización en el README'
+author: 'Daniel'
+
+inputs:
+  readme-path:
+    description: 'Ruta al archivo README'
+    required: false
+    default: 'README.md'
+  timezone:
+    description: 'Zona horaria para la fecha'
+    required: false
+    default: 'UTC'
+
+outputs:
+  update-date:
+    description: 'La fecha de actualización generada'
+    value: ${{ steps.update.outputs.date }}
+  file-updated:
+    description: 'Indica si el archivo fue actualizado'
+    value: ${{ steps.update.outputs.updated }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Actualizar fecha en README
+      id: update
+      shell: bash
+      run: |
+        README_FILE="${{ inputs.readme-path }}"
+
+        # Verificar que el archivo existe
+        if [ ! -f "$README_FILE" ]; then
+          echo "::error::El archivo $README_FILE no existe"
+          exit 1
+        fi
+
+        # Generar fecha actual
+        if [ "${{ inputs.timezone }}" = "UTC" ]; then
+          CURRENT_DATE=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+        else
+          CURRENT_DATE=$(date '+%Y-%m-%d %H:%M:%S')
+        fi
+
+        echo "🗓️  Nueva fecha: $CURRENT_DATE"
+
+        # Crear archivo temporal con el contenido actualizado
+        awk -v date="$CURRENT_DATE" '
+          /<!-- LAST_UPDATE_START -->/ {
+            print
+            print "Última actualización: " date
+            skip=1
+            next
+          }
+          /<!-- LAST_UPDATE_END -->/ {
+            skip=0
+            print
+            next
+          }
+          !skip {print}
+        ' "$README_FILE" > "${README_FILE}.tmp"
+
+        # Reemplazar el archivo original
+        mv "${README_FILE}.tmp" "$README_FILE"
+
+        # Verificar si hubo cambios
+        if git diff --quiet "$README_FILE"; then
+          echo "ℹ️  No hay cambios en el README"
+          echo "updated=false" >> $GITHUB_OUTPUT
+        else
+          echo "✅ README actualizado exitosamente"
+          echo "updated=true" >> $GITHUB_OUTPUT
+        fi
+
+        echo "date=$CURRENT_DATE" >> $GITHUB_OUTPUT
+
+    - name: Mostrar resumen
+      shell: bash
+      run: |
+        echo "📄 Archivo: ${{ inputs.readme-path }}"
+        echo "🕐 Fecha actualizada: ${{ steps.update.outputs.date }}"
+        echo "🔄 Actualizado: ${{ steps.update.outputs.updated }}"

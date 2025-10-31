@@ -1,0 +1,50 @@
+name: Update README Date
+
+on:
+  schedule:
+    # Se ejecuta todos los días a las 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Actualizar fecha en README
+      id: update-date
+      uses: ./actions/update-readme-date
+      with:
+        readme-path: 'README.md'
+        timezone: 'UTC'
+
+    - name: Commit y push si hay cambios
+      if: steps.update-date.outputs.file-updated == 'true'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add README.md
+        git commit -m "Update README with latest date"
+        git push
+
+    - name: Mostrar resultado
+      run: |
+        echo "### 📅 Actualización de README" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Fecha:** ${{ steps.update-date.outputs.update-date }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Archivo actualizado:** ${{ steps.update-date.outputs.file-updated }}" >> $GITHUB_STEP_SUMMARY
+
+        if [ "${{ steps.update-date.outputs.file-updated }}" = "true" ]; then
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ El README fue actualizado y commiteado automáticamente" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "ℹ️  No se realizaron cambios (la fecha ya estaba actualizada)" >> $GITHUB_STEP_SUMMARY
+        fi
