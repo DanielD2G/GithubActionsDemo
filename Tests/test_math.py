@@ -48,4 +48,4 @@ class TestMathOperations:
         assert add(5, 0) == 5
 
     def test_add_other(self):
-        assert add(5, 5) == 5
+        assert add(5, 5) == 10
